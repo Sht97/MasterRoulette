@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>La ruleta de la muerte</title>
+    <script src="js/Winwheel.min.js"></script>
+
+<script src="js/TweenMax.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <script src="js/sweetalert.min.js"></script>
+    <link href="css/sweetalert.css" rel="stylesheet" />
+    
+  <meta property="og:url"                content="https://oscaruhp.github.io/Laruleta/" />
+<meta property="og:type"               content="article" />
+<meta property="og:title"              content="La ruleta (Rifa cosas)" />
+<meta property="og:description"        content="Con esta ruleta online puedes rifar lo que gustes, solo llena la lista y genera tu ruleta" />
+<meta property="og:image"              content="https://oscaruhp.github.io/Laruleta/img/ruleta.jpg" />
+
+</head>
+<body>
+    <form id="form1" runat="server">
+
+    <div>
+        <style>
+         #canvasContainer {
+            background-image: url(img/esta.png);
+            background-repeat: no-repeat;  
+            background-position: center;   
+            width: 700px;                  
+            height: 700px;
+			cursor:pointer;
+		
+        }
+
+        </style>
+
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-3 text-center">  
+				<h1>La Ruleta</h1>
+                    <br />
+                     <br />
+                    <br />
+                    <div class="card bg-warning">
+  <div class="card-body">
+  
+                  <h4 class="card-title">Lista de elementos:</h4>  
+                    
+                    <textarea id="ListaElementos" class="form-control" rows="13">
+                        
+	  </textarea>
+<br />
+                    <input type="button" onclick="leerElementos()" class="btn btn-danger btn-lg btn-block" value="Generar Ruleta"/><br />
+      </div></div>
+      
+                </div>
+                <div class="col-7 text-center">
+				<br/>
+                     <input id="bigButton" class="btn-block btn-lg btn btn-success " onclick="startSpin(); this.disabled=true;" value="Girar" type="button"/>
+                      <div id="canvasContainer" onclick="startSpin();">
+     <canvas id='Ruleta' width='700' height='690'>
+         
+            Canvas not supported, use another browser.
+        </canvas> 
+        
+            </div>
+                </div>
+                <div class="col-2">
+                </div>
+            </div>
+      
+
+            </div>
+<!--        <script src="../socket.io/socket.io.js"></script>-->
+<!--        <script>-->
+<!--            var socket = io();-->
+<!--            socket.on('news', function (data) {-->
+<!--                console.log(data);-->
+<!--                socket.emit('my other event', { my: 'data' });-->
+<!--            });-->
+<!--        </script>        -->
+<!--        <script>-->
+<!--            var socket = io();-->
+<!--            socket.on('news', function (data) {-->
+<!--                console.log(data);-->
+<!--                socket.emit('my other event', { my: 'data' });-->
+<!--            });-->
+<!--        </script>-->
+     <script>
+         let theWheel = new Winwheel({
+             'numSegments'       : 37,         // Specify number of segments.
+             'outerRadius'       : 300,       // Set outer radius so wheel fits inside the background.
+             'drawMode'          : 'image',   // drawMode must be set to image.
+             'drawText'          : true,      // Need to set this true if want code-drawn text on image wheels.
+             'textFontSize'      : 8,        // Set text options as desired.
+             'textOrientation'   : 'curved',
+             'textDirection'     : 'reversed',
+             'textAlignment'     : 'outer',
+             'textMargin'        : 5,
+             'textFontFamily'    : 'monospace',
+             'textStrokeStyle'   : 'black',
+             'textLineWidth'     : 2,
+             'textFillStyle'     : 'white',
+             'segments'     :                // Define segments.
+                 [
+                     {'text' : '1'},
+                     {'text' : '2'},
+                     {'text' : '3'},
+                     {'text' : '5'},
+                     {'text' : '6'},
+                     {'text' : '7'},
+                     {'text' : '8'},
+                     {'text' : '9'},
+                     {'text' : '10'},
+                     {'text' : '11'},
+                     {'text' : '12'},
+                     {'text' : '13'},
+                     {'text' : '14'},
+                     {'text' : '15'},
+                     {'text' : '16'},
+                     {'text' : '17'},
+                     {'text' : '18'},
+                     {'text' : '19'},
+                     {'text' : '20'},
+                     {'text' : '22'},
+                     {'text' : '23'},
+                     {'text' : '24'},
+                     {'text' : '25'},
+                     {'text' : '26'},
+                     {'text' : '27'},
+                     {'text' : '28'},
+                     {'text' : '31'},
+                     {'text' : '32'},
+                     {'text' : '33'},
+                     {'text' : '34'},
+                     {'text' : '35'},
+                     {'text' : '36'},
+                     {'text' : '37'},
+                     {'text' : '0'},
+                     {'text' : '4'},
+                     {'text' : '21'},
+                     {'text' : '29'},
+                     {'text' : '30'}
+
+
+                 ],
+             'animation' :                   // Specify the animation to use.
+                 {
+                     'type'     : 'spinToStop',
+                     'duration' : 5,     // Duration in seconds.
+                     'spins'    : 8,     // Number of complete spins.
+                     'stopAngle': 150,
+                     'callbackFinished' : alertPrize
+                 }
+         });
+         let loadedImg = new Image();
+         loadedImg.onload = function()
+         {
+             theWheel.wheelImage = loadedImg;    // Make wheelImage equal the loaded image object.
+             theWheel.draw();                    // Also call draw function to render the wheel.
+         }
+
+         // Set the image source, once complete this will trigger the onLoad callback (above).
+         loadedImg.src = "img/esta.png";
+
+
+      //    function Mensaje() {
+      //        winningSegment = objRuleta.getIndicatedSegment();
+		// 	 SonidoFinal();
+      //        swal({
+      //            title: " ¡ "+winningSegment.text+" !",
+      //
+      //            imageUrl: "img/esta.png",
+      //            showCancelButton: true,
+      //            confirmButtonColor: "#e74c3c",
+      //            confirmButtonText: "Ok,Reiniciar",
+      //            cancelButtonText: "Quitar elemento",
+      //            closeOnConfirm: true,
+      //            closeOnCancel: true
+      //        }
+      //
+      //            ,
+      //
+      // function (isConfirm) {
+      //     if (isConfirm) {
+      //
+      //     } else {
+      //
+      //         $('#ListaElementos').val($('#ListaElementos').val().replace(winningSegment.text,""));
+      //         leerElementos();
+      //
+      //     }
+      //     objRuleta.stopAnimation(false);
+      //     objRuleta.rotationAngle = 0;
+      //     objRuleta.draw();
+      //     DibujarTriangulo();
+      //     bigButton.disabled = false;
+      // });
+      //
+      // }
+         function startSpin()
+         {
+
+
+             // Disable the spin button so can't click again while wheel is spinning.
+             //document.getElementById('spin_button').src       = "spin_off.png";
+             //document.getElementById('spin_button').className = "";
+
+             // Begin the spin animation by calling startAnimation on the wheel object.
+             theWheel.startAnimation();
+
+             // Set to true so that power can't be changed and spin button re-enabled during
+             // the current animation. The user will have to reset before spinning again.
+             //   wheelSpinning = true;
+
+         }
+
+
+
+         function alertPrize(indicatedSegment)
+         {
+             // Do basic alert of the segment text. You would probably want to do something more interesting with this information.
+             alert("The wheel stopped on " + indicatedSegment.text);
+         }
+
+
+  //      function leerElementos() {
+  //                txtListaElementos=$('#ListaElementos').val().trim();
+    //              var Elementos = txtListaElementos.split('\n');
+      //            var ElementosRuleta= [];
+	    //      Elementos.forEach(function (Elemento) {
+          //            if(Elemento){
+            //          ElementosRuleta.push({ 'fillStyle': "#" + ((1 << 24) * Math.random() | 0).toString(16), 'text': Elemento });
+              //    }
+               //   });
+                 // DibujarRuleta(ElementosRuleta);
+	    // }
+//         leerElementos();
+//		  var audio = new Audio('alarma.mp3');  // Create audio object and load desired file.
+//		function SonidoFinal()
+//			{
+//				audio.pause();
+//				audio.currentTime = 0;
+//				audio.play();
+//			}
+ 
+</script>
+    </div>
+    </form>
+</body>
+</html>
