@@ -1,10 +1,11 @@
 <html>
     <head>
-        <title>HTML5 Canvas Winning Wheel</title>
+        <title>MasterRoulette</title>
         <link rel="stylesheet" href="main.css" type="text/css" />
         <script src="js/Winwheel.min.js"></script>
-        <script src="js/TweenMax.min.js"></script>
         <script src="js/sweetalert.min.js"></script>
+        <script src="js/TweenMax.min.js"></script>
+        <link href="css/label.css" rel="stylesheet" />
         <link href="css/sweetalert.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
@@ -13,150 +14,157 @@
         <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
     </head>
     <body>
-        <div align="center">
+        <!-- MENSAJE QUE VA ARRIBA DELA RULETA JUNTO CON EL MODAl -->
+        <div align="center" >
             <h1>Winwheel.js example wheel - basic image wheel</h1>
             <p>Here is an example of a basic image drawn wheel, where the entire face of the wheel has been created out of a graphically rich image.</p>
             <br />
             <p>Choose a power setting then press the Spin button. You will be alerted to the prize won when the spinning stops.</p>
             <br />
+            <span id="sala" class="label other">Aqui estara tu sala</span>
             <div id="myModal" class="modal show" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Modal title</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <p><h1>
-                        Bienvenido al casino de Presi y Rivera !
-                         Por favor seleccione la sala a la que desea ingresar
-                      </h1></p>
-                    </div>
-                    <form action="javascript:ejemplo()">
-                        <div class="form-group">
-                          <label for="recipient-name" class="col-1-label" >Usuario:</label>
-                          <input type="text" class="form-control" id="Name">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Bienvenida !!!!!!</h5>
+
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="connectRoom('Diamond')">Diamante</button>
-                            <button type="submit" class="btn btn-danger" data-dismiss="modal"onclick="connectRoom('Clover')">Trebol</button>
-                            <button type="submit" class="btn btn-info"data-dismiss="modal"onclick="connectRoom('Heart')">Corazon</button>
-                            <button type="submit" class="btn btn-warning"data-dismiss="modal" onclick="connectRoom('Spade')">Picas</button>
-                    </form>
-                   
-                    </div>
-                  </div>
+                        <div class="modal-body">
+                            <p>
+                                <h3>
+                                Bienvenido al casino de Presi y Rivera !
+                                Por favor seleccione la sala a la que desea ingresar
+                                </h3>
+                            </p>
+                        </div>
+                                                    
+                            <label for="recipient-name" class="col-1-label" >Usuario:</label>
+                            <input type="text" class="form-control" id="Name">
+                            <div class="btn-group" role="group" aria-label="Basic example"> 
+  
+                                <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="connectRoom('Diamond')">Diamante</button>
+                                <button type="submit" class="btn btn-success" data-dismiss="modal"onclick="connectRoom('Clover')">Trebol</button>
+                                <button type="submit" class="btn btn-danger"data-dismiss="modal"onclick="connectRoom('Heart')">Corazon</button>
+                                <button type="submit" class="btn btn-dark"data-dismiss="modal" onclick="connectRoom('Spade')">Picas</button>
+                            </div>
                 </div>
+            </div>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="row">
+              <div class="col order-last">
+                <div id="Apostadores">
+                    <table id="p1"></table>
+                </div>
+
               </div>
-            <table cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                    <td>
-                        <div class="power_controls">
-                            <br />
-                            <br />
-                    
-                            <table class="power" cellpadding="10" cellspacing="0">
-                                <tr>
-                                    <th align="center">Power</th>latest
-                                </tr>
-                                <tr>
-                                    <td width="78" align="center" id="pw3" onClick="powerSelected(3);">High</td>
-                                </tr>
-                                <tr>
-                                    <td align="center" id="pw2" onClick="powerSelected(2);">Med</td>
-                                </tr>
-                                <tr>
-                                    <td align="center" id="pw1" onClick="powerSelected(1);">Low</td>
-                                </tr>
-                            </table>
-                            <br/>
-                            <img id="spin_button" src="spin_off.png" alt="Spin" onClick="mySpin();" />
-                            <br /><br />
-                            &nbsp;&nbsp;<a href="#" onClick="resetWheel(); return false;">Play Again</a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(reset)
-                        </div>
-                    </td>
-                    <td width="715" height="951" class="the_wheel" align="center" valign="center">
-                        <canvas id="canvas" width="715" height="951">
-                            <p style="{color: white}" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
-                        </canvas>
-                    </td>
-                    <td>          
-                        <div id="Apostadores">
-                            <table id="p1"></table>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+              <div class="col">
+                  <div class="the_wheel">
+                    <canvas id="canvas" width="715" height="951">
+                        <p style="{color: black}" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
+                    </canvas>
+                </div>  
+              </div>
+              <div class="col order-first">
+                <div class="power_controls">
+                    <br />
+                    <br />
+            
+                    <table class="power" cellpadding="10" cellspacing="0">
+                        <tr>
+                            <th align="center">Power</th>latest
+                        </tr>
+                        <tr>
+                            <td width="78" align="center" id="pw3" onClick="powerSelected(3);">High</td>
+                        </tr>
+                        <tr>
+                            <td align="center" id="pw2" onClick="powerSelected(2);">Med</td>
+                        </tr>
+                        <tr>
+                            <td align="center" id="pw1" onClick="powerSelected(1);">Low</td>
+                        </tr>
+                    </table>
+                    <br/>
+                    <img id="spin_button" src="spin_off.png" alt="Spin" onClick="mySpin();" />
+                    <br /><br />
+                    &nbsp;&nbsp;<a href="#" onClick="resetWheel(); return false;">Play Again</a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(reset)
+                </div>
+
+              </div>
+            </div>
+          </div>
+
             <div class="container">
                 <div class="row">
-                  <div class="col-6">
+                
                     <table class="table table-bordered table-dark">
 
-                      <tbody>
+                    <tbody>
 
                         <tr>
-                          <td rowspan="4"><button type="button" class="btn btn-success"onclick="apostar(0)"><br><br><br>0<br><br><br><br></button></td>
-                          <td><button type="button" class="btn btn-danger" onclick="apostar(3)">3</button></td>
-                          <td><button type="button" class="btn btn-secondary"onclick="apostar(6)">6</button></td>
-                          <td><button type="button" class="btn btn-danger"onclick="apostar(9)">9</button></td>
-                          <td><button type="button" class="btn btn-danger" onclick="apostar(12)">12</button></td>
-                          <td><button type="button" class="btn btn-secondary" onclick="apostar(15)">15</button></td>
-                          <td><button type="button" class="btn btn-danger" onclick="apostar(18)">18</button></td>
-                          <td><button type="button" class="btn btn-danger" onclick="apostar(21)">21</button></td>
-                          <td><button type="button" class="btn btn-secondary" onclick="apostar(24)">24</button></td>
-                          <td><button type="button" class="btn btn-danger" onclick="apostar(27)">27</button></td>
-                          <td><button type="button" class="btn btn-danger" onclick="apostar(30)">30</button></td>
-                          <td><button type="button" class="btn btn-secondary" onclick="apostar(33)">33</button></td>
-                          <td><button type="button" class="btn btn-danger" onclick="apostar(36)">36</button></td>
-                          <td><button type="button" class="btn btn-warning"onclick="apostar(37)4">Fila</button></td>
-                       
+                        <td rowspan="4"><button type="button" name="botonApuesta"class="btn btn-success"onclick="apostar(0)"><br><br><br>0<br><br><br><br></button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-danger" onclick="apostar(3)">3</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(6)">6</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-danger"onclick="apostar(9)">9</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-danger" onclick="apostar(12)">12</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-secondary" onclick="apostar(15)">15</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-danger" onclick="apostar(18)">18</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-danger" onclick="apostar(21)">21</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-secondary" onclick="apostar(24)">24</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-danger" onclick="apostar(27)">27</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-danger" onclick="apostar(30)">30</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-secondary" onclick="apostar(33)">33</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-danger" onclick="apostar(36)">36</button></td>
+                        <td><button type="button" name="botonApuesta" class="btn btn-warning"onclick="apostar(37)">Fila</button></td>
+                        <td rowspan="5" colspan="2"><button type="button" id="apuestaReady" class="btn btn-success"onclick="apuestasReady()" disabled= true><br><br><br>Apuestas ready!<br><br><br><br></button></td>
+
+                    
                         </tr>
 
                         <tr>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(2)">2</button></td>
-                            <td><button type="button" class="btn btn-danger"onclick="apostar(5)">5</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(8)">8</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(11)">11</button></td>
-                            <td><button type="button" class="btn btn-danger"onclick="apostaronclick(14)">14</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(17)">17</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(20)">20</button></td>
-                            <td><button type="button" class="btn btn-danger"onclick="apostar(23)">23</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(26)">26</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(29)">29</button></td>
-                            <td><button type="button" class="btn btn-danger"onclick="apostar(32)">32</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(35)">35</button></td>
-                            <td><button type="button" class="btn btn-warning"onclick="apostar(38)">Fila</button></td>
-                          </tr>
-                          <tr>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(2)">2</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-danger"onclick="apostar(5)">5</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(8)">8</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(11)">11</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-danger"onclick="apostar(14)">14</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(17)">17</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(20)">20</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-danger"onclick="apostar(23)">23</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(26)">26</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(29)">29</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-danger"onclick="apostar(32)">32</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(35)">35</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-warning"onclick="apostar(38)">Fila</button></td>
+                        </tr>
+                        <tr>
 
-                            <td><button type="button" class="btn btn-danger"onclick="apostar(1)">1</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(4)">4</button></td>
-                            <td><button type="button" class="btn btn-danger"onclick="apostar(7)">7</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(10)">10</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(13)">13</button></td>
-                            <td><button type="button" class="btn btn-danger" onclick="apostar(16)">16</button></td>
-                            <td><button type="button" class="btn btn-danger"onclick="apostar(19)">19</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(22)">22</button></td>
-                            <td><button type="button" class="btn btn-danger"onclick="apostar(25)">25</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(28)">28</button></td>
-                            <td><button type="button" class="btn btn-secondary"onclick="apostar(31)">31</button></td>
-                            <td><button type="button" class="btn btn-danger"onclick="apostar(34)">34</button></td>
-                            <td><button type="button" class="btn btn-warning"onclick="apostar(39)">Fila</button></td>
-                          </tr>
-                          <tr>
-                            <td colspan="6" style="text-align:center"><button type="button"  class="btn btn-danger btn-lg"onclick="apostar(40)">ROJOOO</button></td>
-                            <td colspan="6" style="text-align:center"><button type="button" class="btn btn-secondary btn-lg"onclick="apostar(41)">NEGROOO</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-danger"onclick="apostar(1)">1</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(4)">4</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-danger"onclick="apostar(7)">7</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(10)">10</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(13)">13</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-danger" onclick="apostar(16)">16</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-danger"onclick="apostar(19)">19</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(22)">22</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-danger"onclick="apostar(25)">25</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(28)">28</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-secondary"onclick="apostar(31)">31</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-danger"onclick="apostar(34)">34</button></td>
+                            <td><button type="button" name="botonApuesta" class="btn btn-warning"onclick="apostar(39)">Fila</button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6"  style="text-align:center"><button name="botonApuesta" type="button" class="btn btn-secondary btn-lg"onclick="apostar(41)">NEGROOO</button></td>
+                            <td colspan="6"  style="text-align:center"><button name="botonApuesta" type="button"  class="btn btn-danger btn-lg"onclick="apostar(40)">ROJOOO</button></td>
 
-                          </tr>
-                      </tbody>
+                        </tr>
+                    </tbody>
                     </table>
-                  </div>
+                
                 </div>
             </div>
-            
-        </div>
         <script src="/socket.io/socket.io.js"></script>
 
         <script>
@@ -166,11 +174,12 @@
             });
 
 
-            
+            var buttonsApuesta=document.getElementsByName("botonApuesta");
             var credito=10000;
             var usuario;
             const socket = io.connect();
             var myTurn=false;
+            var timeApuesta=true;
 
             socket.on('newUser',llenarTabla);
             socket.on('rotateGuest',otherSpin);
@@ -179,16 +188,29 @@
             socket.on('newRound',ganoApuesta)
             socket.on('broadcast',data=>{console.log(data)})
             socket.on('host',()=>{myTurn=true
-                console.log('Te toca girar');
+                console.log('Te toca girar',myTurn);
+                SelectHost();
             })
             socket.on('estasSolo',data=>alert(data));
+            
+            function apuestasReady(){
+                cambiarBotones()
+                socket.emit('apuestaReady')
+            }
+
+            function cambiarBotones(){ 
+                if(timeApuesta==true)for(let i of buttonsApuesta)i.disabled=true;      
+                else  for(let i of buttonsApuesta)i.disabled=false
+
+            }
+
             function ganoApuesta(data){
-                let found = data.find(element => element.socket==socket.id);
+                console.log('data',data);
+                let found = data.arreglo.find(element => element.socket==socket.id);
                 if(found.credito>credito){
                     swal({
-                        title: " !!! Usted ganó tanto en la anterior apuesta "+(found.credito - credito)+" !!!",
+                        title: " !!! El numero ganador fue :" + data.numberWin + " y usted ganó!!!" +(found.credito - credito)+ "",
                         imageUrl: "img/Muerte.png",
-
                         showAcceptButton: true,
                         confirmButtonColor: "#e74c3c",
                         confirmButtonText: "Okey",
@@ -197,27 +219,26 @@
                 }
                 else{
                     swal({
-                        title: " !!! Usted Perdio toda su apuesta !!!",
+                        title: " !!! El numero ganador fue :"+ data.numberWin + "Usted Perdio toda su apuesta !!!",
                         imageUrl: "img/Muerte.png",
-
                         showAcceptButton: true,
                         confirmButtonColor: "#e74c3c",
                         confirmButtonText: "Okey",
                         closeOnConfirm: true
                     })
                 }
+                resetWheel();
                 credito=found.credito;
-                llenarTabla(data)
+                llenarTabla(data.arreglo)
             }
 
             function llenarTabla(data){
-                console.log(data);
                 var perrow = 2, // 3 items per row
                 count = 0, // Flag for current cellvar 
                 elmnt = document.getElementById("p1");
                 elmnt.remove();
                 table = document.createElement("table")
-                table.className="table table-bordered table-dark";
+                table.className="table table-bordered table-dark"
                 table.id="p1";
                 data.map(i=>{
                     row = table.insertRow();
@@ -235,6 +256,7 @@
 
             function apostar(x){
                 console.log(usuario);
+                
                 swal({
                     title: "Ventana de apuestas",
                     text: 'Cuanto desea apostar:',
@@ -258,7 +280,7 @@
                                     confirmButtonText: "Okey",
                                     closeOnConfirm: true
                                 })
-
+                                document.getElementById("apuestaReady").disabled=false;
                                 socket.emit('apuesta',{numero:x,valor:inputValue,estado:true})
                                 credito=credito-inputValue; 
                             }
@@ -361,17 +383,18 @@
 
             function numberWin() {
                 winningSegment = theWheel.getIndicatedSegment();
-                swal({
-                        title: " ¡ "+winningSegment.text+" !",
-                        imageUrl: "img/Muerte.png",
+                socket.emit('win',winningSegment.text)
+                // swal({
+                //         title: " ¡ El numero ganador es "+winningSegment.text+" !",
+                //         imageUrl: "img/Muerte.png",
 
-                        showCancelButton: true,
-                        confirmButtonColor: "#e74c3c",
-                        confirmButtonText: "Ok,Reiniciar",
-                        closeOnConfirm: false
-                    },()=> {
-                        socket.emit('win',winningSegment.text)
-                })
+                //         showCancelButton: true,
+                //         confirmButtonColor: "#e74c3c",
+                //         confirmButtonText: "Okey",
+                //         closeOnConfirm: false
+                //     },()=> {
+                //         socket.emit('win',winningSegment.text)
+                // })
             }
                 // -------------------------------------------------------
             // Function to handle the onClick on the power buttons.
@@ -447,7 +470,7 @@
            
               }
               else{
-                  alert('No es tu turno')
+                  console.log('No es tu turno',myTurn)
              }
             }
 
@@ -457,7 +480,7 @@
             function resetWheel()
             {
                 theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
-                theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+                // theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
 
                 document.getElementById('pw1').className = "";  // Remove all colours from the power level indicators.
                 document.getElementById('pw2').className = "";
@@ -485,10 +508,23 @@
                         confirmButtonColor: "#e74c3c",
                         confirmButtonText: "Okey",
                         closeOnConfirm: true
+
                     })
+                    document.getElementById('sala').innerHTML= sala;
 
             }
+            function SelectHost(){
+                swal({
+                        title: " Te toca girar la Rueleta",
+                        imageUrl: "img/Muerte.png",
 
+                        showAcceptButton: true,
+                        confirmButtonColor: "#e74c3c",
+                        confirmButtonText: "Okey",
+                        closeOnConfirm: true
+                    })
+            
+            }
         </script>
     </body>
 </html>

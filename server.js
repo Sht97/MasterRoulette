@@ -23,6 +23,7 @@ class Jugador{
         this.name=name;
         this.credito=10000;
         this.apuestas=[]
+        this.readyToPlay=false;
     }
     addApuesta(apuesta){
         this.apuestas.push(apuesta)
@@ -79,7 +80,14 @@ function contarApuestas(sala){
     return aux;
 }
 
-const rooms=["Diamond","Clover","Heart","Spade"];
+function countReadyToPlay(room){
+    var aux=true;
+    room.map(i=>{
+        if(i.readyToPlay==true) aux=false;
+    })
+    return aux;
+}
+
 var Diamonds=[];
 var Clovers=[];
 var Hearts=[];
@@ -100,23 +108,55 @@ io.on('connection', socket=> {
                 break;
             case "Clover":
                 //Agrega al array
-                Clovers.push({socket:socket.id,name:name,credito:1000});
+                Clovers.push(jugador);
                 //Manda al nuevo la lista 
                 io.in(room).emit('newUser',Clovers)
                 break;
             case "Heart":
-                Hearts.push({socket:socket.id,name:name,credito:1000});
+                Hearts.push(jugador);
                 io.in(room).emit('newUser',Hearts)
                 break;
             case "Spade":
-                Spades.push({socket:socket.id,name:name,credito:1000});
+                Spades.push(jugador);
                 io.in(room).emit('newUser',Spades)
 
                 break;         
         }
+        socket.on('apuestaReady',()=>{
+            switch (room) {
+                case "Diamond":
+                    Diamonds.map(i=>{
+                        if(i.socket==socket.id){
+                            i.readyToPlay=true;
+                        }
+                    })
+                    aux=Diamonds.length;
+                    if(contarcountReadyToPlayApuestas(Diamonds))
+                    {   
+                        host=Math.round(Math.random()*(aux-1))
+                        io.to(Diamonds[host].socket).emit('host')
+                    }
+                    
+                    break;
+                case value:
+                    
+                break;
+                case value:
+            
+                    break;
+
+                case value:
+        
+                    break;
+            
+                default:
+                    break;
+            }
+        })
 
         socket.on('apuesta',data=>{
             a=new Apuesta(data.numero,data.valor,data.estado)
+            
             switch (room) {
                 case "Diamond":
                     Diamonds.map(i=>{
@@ -127,12 +167,12 @@ io.on('connection', socket=> {
                     })
                     io.in(room).emit('checkApuesta',Diamonds);
                     aux=Diamonds.length;
-                    if(Diamonds.length===1){
+                    if(aux===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
                     }
+
                     else{
-                        f=contarApuestas(Diamonds);
-                        if(f)
+                        if(contarApuestas(Diamonds))
                         {   
                             host=Math.round(Math.random()*(aux-1))
                             io.to(Diamonds[host].socket).emit('host')
@@ -148,6 +188,17 @@ io.on('connection', socket=> {
                         }
                     })
                     io.in(room).emit('checkApuesta',Clovers);   
+                    aux=Clovers.length;
+                    if(aux===1){
+                        io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
+                    }
+                    else{
+                        if(contarApuestas(Clovers))
+                        {   
+                            host=Math.round(Math.random()*(aux-1))
+                            io.to(Clovers[host].socket).emit('host')
+                        }
+                    }  
                     break;
     
                 case "Heart":
@@ -158,6 +209,17 @@ io.on('connection', socket=> {
                         }
                     })
                     io.in(room).emit('checkApuesta',Hearts);   
+                    aux=Hearts.length;
+                    if(aux===1){
+                        io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
+                    }
+                    else{
+                        if(contarApuestas(Hearts))
+                        {   
+                            host=Math.round(Math.random()*(aux-1))
+                            io.to(Hearts[host].socket).emit('host')
+                        }
+                    }    
                     break;
     
                 case "Spade":
@@ -168,7 +230,17 @@ io.on('connection', socket=> {
                         }
                     })
                     io.in(room).emit('checkApuesta',Spades);   
-                    break;
+                    aux=Spades.length;
+                    if(aux===1){
+                        io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
+                    }
+                    else{
+                        if(contarApuestas(Spades))
+                        {   
+                            host=Math.round(Math.random()*(aux-1))
+                            io.to(Spades[host].socket).emit('host')
+                        }
+                    }  
             }
         })
 
@@ -211,25 +283,28 @@ io.on('connection', socket=> {
                     Diamonds.map(jugador=>{
                         jugador.resolverApuestas(win);
                     })
-                    io.in(room).emit('newRound',Diamonds)
+                    io.in(room).emit('newRound',{arreglo:Diamonds, numberWin:win})
                     break;
     
                 case "Clover":
                     Clovers.map(jugador=>{
                         jugador.resolverApuestas(win);
                     })
+                    io.in(room).emit('newRound',Clovers)
                     break;
     
                 case "Heart":
                     Hearts.map(jugador=>{
                         jugador.resolverApuestas(win);
                     })
+                    io.in(room).emit('newRound',Hearts)
                     break;
     
                 case "Spade":
                     Spades.map(jugador=>{
                         jugador.resolverApuestas(win);
                     })
+                    io.in(room).emit('newRound',Spades)
                     break;
             console.log('se fue alguien',room);
         };
