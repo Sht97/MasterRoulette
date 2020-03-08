@@ -15,6 +15,8 @@ filaDos=[2,5,8,11,14,17,20,23,26,29,32,35]
 filaTres=[1,4,7,10,13,16,19,22,25,28,31,34]
 negros=[2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35]
 rojos=[1,3,5,7,9,12,14,16,18,19,21,22,25,27,30,32,34,36]
+
+
 class Jugador{
     constructor(socket,name){
         this.socket=socket;
@@ -69,6 +71,13 @@ class Apuesta{
     }
 }
 
+function contarApuestas(sala){
+    var aux=true;
+    sala.map(i=>{
+        if(i.apuestas.length===0)aux= false;
+    })
+    return aux;
+}
 
 const rooms=["Diamond","Clover","Heart","Spade"];
 var Diamonds=[];
@@ -87,7 +96,7 @@ io.on('connection', socket=> {
             case "Diamond":
                 Diamonds.push(jugador);
                 console.log(Diamonds);
-                io.in(room).emit('newUser',Diamonds);
+                io.in(room).emit('newUser',Diamonds);   
                 break;
             case "Clover":
                 //Agrega al array
@@ -98,7 +107,6 @@ io.on('connection', socket=> {
             case "Heart":
                 Hearts.push({socket:socket.id,name:name,credito:1000});
                 io.in(room).emit('newUser',Hearts)
-
                 break;
             case "Spade":
                 Spades.push({socket:socket.id,name:name,credito:1000});
@@ -117,7 +125,19 @@ io.on('connection', socket=> {
                             i.credito=i.credito-a.valor;
                         }
                     })
-                    io.in(room).emit('checkApuesta',Diamonds);               
+                    io.in(room).emit('checkApuesta',Diamonds);
+                    aux=Diamonds.length;
+                    if(Diamonds.length===1){
+                        io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
+                    }
+                    else{
+                        f=contarApuestas(Diamonds);
+                        if(f)
+                        {   
+                            host=Math.round(Math.random()*(aux-1))
+                            io.to(Diamonds[host].socket).emit('host')
+                        }
+                    }               
                     break;
     
                 case "Clover":

@@ -71,7 +71,7 @@
                                     <td align="center" id="pw1" onClick="powerSelected(1);">Low</td>
                                 </tr>
                             </table>
-                            <br />
+                            <br/>
                             <img id="spin_button" src="spin_off.png" alt="Spin" onClick="mySpin();" />
                             <br /><br />
                             &nbsp;&nbsp;<a href="#" onClick="resetWheel(); return false;">Play Again</a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(reset)
@@ -164,9 +164,13 @@
             $( document ).ready(function() {
                 $('#myModal').modal('toggle')
             });
+
+
+            
             var credito=10000;
             var usuario;
             const socket = io.connect();
+            var myTurn=false;
 
             socket.on('newUser',llenarTabla);
             socket.on('rotateGuest',otherSpin);
@@ -174,7 +178,10 @@
             socket.on('checkApuesta',llenarTabla);
             socket.on('newRound',ganoApuesta)
             socket.on('broadcast',data=>{console.log(data)})
-
+            socket.on('host',()=>{myTurn=true
+                console.log('Te toca girar');
+            })
+            socket.on('estasSolo',data=>alert(data));
             function ganoApuesta(data){
                 let found = data.find(element => element.socket==socket.id);
                 if(found.credito>credito){
@@ -202,6 +209,7 @@
                 credito=found.credito;
                 llenarTabla(data)
             }
+
             function llenarTabla(data){
                 console.log(data);
                 var perrow = 2, // 3 items per row
@@ -225,8 +233,6 @@
             document.getElementById("Apostadores").appendChild(table);
             }
 
-
-
             function apostar(x){
                 console.log(usuario);
                 swal({
@@ -237,33 +243,29 @@
                     closeOnConfirm: false,
                     animation: "slide-from-top"
                     }, function(inputValue){
-                        if(inputValue>credito){
+                        if(inputValue){
+                            if(inputValue>credito){
                             alert('No se pudo por saldo insuficiente');
-                        }
-                        else{
-                            swal({
-                                // hay que cambiar la x
-                                title: " ¡Usted aposto al"+x+inputValue+" !!!",
-                                imageUrl: "img/Muerte.png",
+                            }
+                            else{
+                                swal({
+                                    // hay que cambiar la x
+                                    title: " ¡Usted aposto al"+x+inputValue+" !!!",
+                                    imageUrl: "img/Muerte.png",
 
-                                showAcceptButton: true,
-                                confirmButtonColor: "#e74c3c",
-                                confirmButtonText: "Okey",
-                                closeOnConfirm: true
-                            })
+                                    showAcceptButton: true,
+                                    confirmButtonColor: "#e74c3c",
+                                    confirmButtonText: "Okey",
+                                    closeOnConfirm: true
+                                })
 
-                            socket.emit('apuesta',{numero:x,valor:inputValue,estado:true})
-                            credito=credito-inputValue; 
-                        }
+                                socket.emit('apuesta',{numero:x,valor:inputValue,estado:true})
+                                credito=credito-inputValue; 
+                            }
                     
-                });
-                
-            }
+                        }
 
-            function apostarColor(color){
-                
-            }
-            function apostarFila(fila){
+                });
                 
             }
 
@@ -409,8 +411,9 @@
             // Click handler for spin button.
             // -------------------------------------------------------
             function mySpin()
-            {
+            {   
                 // Ensure that spinning can't be clicked again while already running.
+              if(myTurn){
                 if (wheelSpinning == false) {
                     // Based on the power level selected adjust the number of spins for the wheel, the more times is has
                     // to rotate with the duration of the animation the quicker the wheel spins.
@@ -440,6 +443,12 @@
                     wheelSpinning = true;
                     socket.emit('rotateHost',{power:theWheel.animation.spins,stopAngle:stopAt});
                 }
+                myTurn=false;
+           
+              }
+              else{
+                  alert('No es tu turno')
+             }
             }
 
             // -------------------------------------------------------
