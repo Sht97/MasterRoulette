@@ -401,11 +401,11 @@
 
             function numberWin() {
                 winningSegment = theWheel.getIndicatedSegment();
-                if (myTurn=true){
+                if (myTurn===true){
 
                     socket.emit('win',winningSegment.text)
                 }
-               
+               myTurn=false;
 
             }
                 // -------------------------------------------------------
@@ -465,8 +465,8 @@
                     document.getElementById('spin_button').className = "";
 
                     // Begin the spin animation by calling startAnimation on the wheel object.
-                    //let stopAt = (91 + Math.floor((Math.random() * 43)))
-                    let stopAt = 180;
+                    let stopAt = (91 + Math.floor((Math.random() * 43)))
+                    //let stopAt = 180;
                     console.log(stopAt,theWheel.animation.spins);
 
                     theWheel.animation.stopAngle = stopAt;
@@ -478,7 +478,7 @@
                     wheelSpinning = true;
                     socket.emit('rotateHost',{power:theWheel.animation.spins,stopAngle:stopAt});
                 }
-                myTurn=false;
+                // myTurn=false;
            
               }
               else{

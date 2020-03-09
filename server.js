@@ -55,9 +55,20 @@ class Jugador{
                     }                    
                     break;
                 case 3:
-                    if(negros.includes(win))this.credito=this.credito+apuesta.valor*2;
-                    else if(rojos.includes(win))this.credito=this.credito+apuesta.valor*2
-                    break;
+                    switch(apuesta.numero){                
+                        
+                        case 41:
+                            if(negros.includes(win))
+                                {this.credito=this.credito+apuesta.valor*2 ;
+                                console.log('apuesta a color negro');}
+                        break;
+                        case 40:
+                         
+                            if(rojos.includes(win))
+                            {this.credito=this.credito+apuesta.valor*2;
+                                console.log('apuesta a color rojo');}}
+    
+                        break;
             }
 
             this.apuestas.pop(apuesta);
