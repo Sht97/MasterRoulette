@@ -216,7 +216,7 @@
                 let found = data.arreglo.find(element => element.socket==socket.id);
                 if(found.credito>credito){
                     swal({
-                        title: " !!! El numero ganador fue :" + data.numberWin + " y usted ganó!!!" +(found.credito - credito)+ "",
+                        title: " !!! El numero ganador fue :  " + "   "+ data.numberWin + " y usted ganó!!! " +(found.credito - credito)+ "",
                         imageUrl: "img/Muerte.png",
                         showAcceptButton: true,
                         confirmButtonColor: "#e74c3c",
@@ -226,7 +226,7 @@
                 }
                 else{
                     swal({
-                        title: " !!! El numero ganador fue :"+ data.numberWin + "Usted Perdio toda su apuesta !!!",
+                        title: " !!! El numero ganador fue :   "+ data.numberWin + "   Usted Perdio toda su apuesta !!!",
                         imageUrl: "img/Muerte.png",
                         showAcceptButton: true,
                         confirmButtonColor: "#e74c3c",
