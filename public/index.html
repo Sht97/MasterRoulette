@@ -280,9 +280,30 @@
                                 alert('No se pudo por saldo insuficiente');
                             }
                             else{
+                                console.log('Holi');
+                                numeroAPuesta=x;
+                                switch (x) {
+                                    case 37:
+                                        console.log('case fila1')
+                                        numeroAPuesta='Fila 1';
+                                        break;
+                                    case 38:
+                                        numeroAPuesta='Fila 2';
+                                        break;
+                                    case 39:
+                                        numeroAPuesta='Fila 1';
+                                        break;
+                                    case 40:
+                                        numeroAPuesta='Color Rojo';
+                                        break;
+                                    case 40:
+                                        numeroAPuesta='Color Negro';
+                                        break;
+
+                                }
                                 swal({
                                     // hay que cambiar la x
-                                    title: " ¡Usted aposto "+inputValue+" al "+x+" !!!",
+                                    title: " ¡Usted aposto "+inputValue+" al "+numeroAPuesta+" !!!",
                                     imageUrl: "img/Muerte.png",
 
                                     showAcceptButton: true,
@@ -296,7 +317,7 @@
                                 var actualText = $("#inputArea").val();
                                 var newText =  actualText +"\n"+ usuario +" aposto al " + x +" "+ inputValue 
 
-                                socket.emit('textApuesta',usuario +" aposto al " + x +" "+ inputValue)
+                                socket.emit('textApuesta',usuario +" aposto "+inputValue+ " al " + numeroAPuesta +" ")
                             }
                             
                         }
@@ -465,7 +486,7 @@
                     document.getElementById('spin_button').className = "";
 
                     // Begin the spin animation by calling startAnimation on the wheel object.
-                    let stopAt = (91 + Math.floor((Math.random() * 43)))
+                    let stopAt = (Math.floor((Math.random() * 360)))
                     //let stopAt = 180;
                     console.log(stopAt,theWheel.animation.spins);
 
@@ -482,7 +503,7 @@
            
               }
               else{
-                  console.log('No es tu turno',myTurn)
+                  alert('Faltan jugadores por dar ready o estas solo en la sala')
              }
             }
 

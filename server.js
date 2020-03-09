@@ -149,13 +149,17 @@ io.on('connection', socket=> {
                         }
                     })
                     aux=Diamonds.length;
-                    if(countReadyToPlay(Diamonds))
-                    {   
-                        host=Math.round(Math.random()*(aux-1))
-                        io.to(Diamonds[host].socket).emit('host')
-                        disableReady(Diamonds)
+                    if(Diamonds.length===1){
+                        io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
                     }
-                    
+                    else{
+                        if(countReadyToPlay(Diamonds))
+                        {
+                            host=Math.round(Math.random()*(aux-1));
+                            io.to(Diamonds[host].socket).emit('host');
+                            disableReady(Diamonds)
+                        }
+                    }
                     break;
                 case "Clover":
                     Clovers.map(i=>{
@@ -164,26 +168,35 @@ io.on('connection', socket=> {
                         }
                     })
                     aux=Clovers.length;
-                    if(countReadyToPlay(Clovers))
-                    {   
-                        host=Math.round(Math.random()*(aux-1))
-                        io.to(Clovers[host].socket).emit('host')
-                        disableReady(Clovers)
+                    if(Clovers.length===1){
+                        io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
+                    }else{
+                        if(countReadyToPlay(Clovers))
+                        {
+                            host=Math.round(Math.random()*(aux-1))
+                            io.to(Clovers[host].socket).emit('host')
+                            disableReady(Clovers)
+                        }
                     }
+
                 break;
                 case "Heart":
-            
                     Hearts.map(i=>{
                         if(i.socket==socket.id){
                             i.readyToPlay=true;
                         }
                     })
                     aux=Hearts.length;
-                    if(countReadyToPlay(Hearts))
-                    {   
-                        host=Math.round(Math.random()*(aux-1))
-                        io.to(Hearts[host].socket).emit('host')
-                        disableReady(Hearts)
+                    if(Hearts.length===1){
+                        io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
+                    }
+                    else {
+                        if(countReadyToPlay(Hearts))
+                        {
+                            host=Math.round(Math.random()*(aux-1))
+                            io.to(Hearts[host].socket).emit('host')
+                            disableReady(Hearts)
+                        }
                     }
                     break;
 
@@ -192,19 +205,24 @@ io.on('connection', socket=> {
                         if(i.socket==socket.id){
                             i.readyToPlay=true;
                         }
-                    })
+                    });
                     aux=Spades.length;
-                    if(countReadyToPlay(Spades))
-                    {   
-                        host=Math.round(Math.random()*(aux-1))
-                        io.to(Spades[host].socket).emit('host')
-                        disableReady(Spades)
+                    if(Hearts.length===1){
+                        io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
+                    }else{
+                        if(countReadyToPlay(Spades))
+                        {
+                            host=Math.round(Math.random()*(aux-1));
+                            io.to(Spades[host].socket).emit('host');
+                            disableReady(Spades)
+                        }
                     }
                     break;
             }
-        })
+        });
 
         socket.on('textApuesta',data=>{
+            console.log('data')
             io.in(room).emit('text',data)
         })
         socket.on('apuesta',data=>{
@@ -332,7 +350,6 @@ io.on('connection', socket=> {
                     })
                     io.in(room).emit('newRound',{arreglo:Spades, numberWin:win})
                     break;
-            console.log('se fue alguien',room);
         };
 
         })
