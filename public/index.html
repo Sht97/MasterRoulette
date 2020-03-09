@@ -14,31 +14,27 @@
         <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
     </head>
     <body>
+
         <!-- MENSAJE QUE VA ARRIBA DELA RULETA JUNTO CON EL MODAl -->
         <div align="center" >
-            <h1>Winwheel.js example wheel - basic image wheel</h1>
-            <p>Here is an example of a basic image drawn wheel, where the entire face of the wheel has been created out of a graphically rich image.</p>
-            <br />
-            <p>Choose a power setting then press the Spin button. You will be alerted to the prize won when the spinning stops.</p>
-            <br />
-            <span id="sala" class="label other">Aqui estara tu sala</span>
-            <div id="myModal" class="modal show" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Bienvenida !!!!!!</h5>
+            <h1 id="sala" class="label" >Aqui estara tu sala</h1>
 
-                        </div>
+            <div id="myModal" class="modal show" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-xl " >
+                    <div class="modal-content">
+
                         <div class="modal-body">
+                            <img src="img/Viejas.png">
                             <p>
+                                
                                 <h3>
                                 Bienvenido al casino de Presi y Rivera !
-                                Por favor seleccione la sala a la que desea ingresar
+                                Al seleccionar una sala, usted acepta que es mayor de +18 años.
                                 </h3>
                             </p>
                         </div>
                                                     
-                            <label for="recipient-name" class="col-1-label" >Usuario:</label>
+                            <h2 for="recipient-name" class="col-1-label" >Usuario:</h2>
                             <input type="text" class="form-control" id="Name">
                             <div class="btn-group" role="group" aria-label="Basic example"> 
   
@@ -48,7 +44,7 @@
                                 <button type="submit" class="btn btn-dark"data-dismiss="modal" onclick="connectRoom('Spade')">Picas</button>
                             </div>
                 </div>
-            </div>
+                </div>
             </div>
         </div>
 
@@ -56,9 +52,11 @@
         <div class="container">
             <div class="row">
               <div class="col order-last">
+
                 <div id="Apostadores">
                     <table id="p1"></table>
                 </div>
+                <ul id="messages"></ul>
 
               </div>
               <div class="col">
@@ -69,10 +67,9 @@
                 </div>  
               </div>
               <div class="col order-first">
-                <div class="power_controls">
-                    <br />
-                    <br />
-            
+                  
+
+        
                     <table class="power" cellpadding="10" cellspacing="0">
                         <tr>
                             <th align="center">Power</th>latest
@@ -95,7 +92,7 @@
 
               </div>
             </div>
-          </div>
+        </div>
 
             <div class="container">
                 <div class="row">
@@ -160,6 +157,7 @@
                             <td colspan="6"  style="text-align:center"><button name="botonApuesta" type="button"  class="btn btn-danger btn-lg"onclick="apostar(40)">ROJOOO</button></td>
 
                         </tr>
+                    
                     </tbody>
                     </table>
                 
@@ -186,26 +184,35 @@
             socket.on('userLeft',llenarTabla);
             socket.on('checkApuesta',llenarTabla);
             socket.on('newRound',ganoApuesta)
-            socket.on('broadcast',data=>{console.log(data)})
             socket.on('host',()=>{myTurn=true
                 console.log('Te toca girar',myTurn);
                 SelectHost();
             })
+            socket.on('text',(data)=>{
+                console.log(data);  
+                $('#messages').append($('<li>').text(data));
+
+            })
+
             socket.on('estasSolo',data=>alert(data));
             
             function apuestasReady(){
-                cambiarBotones()
+                cambiarBotones();
+                timeApuesta=false;
                 socket.emit('apuestaReady')
+                document.getElementById("apuestaReady").disabled=true;
             }
 
             function cambiarBotones(){ 
                 if(timeApuesta==true)for(let i of buttonsApuesta)i.disabled=true;      
                 else  for(let i of buttonsApuesta)i.disabled=false
+                console.log('cambiando botones');
 
             }
 
             function ganoApuesta(data){
                 console.log('data',data);
+                resetWheel();
                 let found = data.arreglo.find(element => element.socket==socket.id);
                 if(found.credito>credito){
                     swal({
@@ -227,9 +234,11 @@
                         closeOnConfirm: true
                     })
                 }
-                resetWheel();
+                cambiarBotones();
+                timeApuesta=true;
                 credito=found.credito;
-                llenarTabla(data.arreglo)
+                llenarTabla(data.arreglo);
+                document.getElementById("apuestaReady").disabled=true;
             }
 
             function llenarTabla(data){
@@ -261,33 +270,42 @@
                     title: "Ventana de apuestas",
                     text: 'Cuanto desea apostar:',
                     type: 'input',
+                    inputType: 'number',
                     showCancelButton: true,
                     closeOnConfirm: false,
                     animation: "slide-from-top"
                     }, function(inputValue){
                         if(inputValue){
                             if(inputValue>credito){
-                            alert('No se pudo por saldo insuficiente');
+                                alert('No se pudo por saldo insuficiente');
                             }
                             else{
                                 swal({
                                     // hay que cambiar la x
-                                    title: " ¡Usted aposto al"+x+inputValue+" !!!",
+                                    title: " ¡Usted aposto "+inputValue+" al "+x+" !!!",
                                     imageUrl: "img/Muerte.png",
 
                                     showAcceptButton: true,
                                     confirmButtonColor: "#e74c3c",
                                     confirmButtonText: "Okey",
-                                    closeOnConfirm: true
+                                    closeOnConfirm: false,
                                 })
                                 document.getElementById("apuestaReady").disabled=false;
                                 socket.emit('apuesta',{numero:x,valor:inputValue,estado:true})
                                 credito=credito-inputValue; 
+                                var actualText = $("#inputArea").val();
+                                var newText =  actualText +"\n"+ usuario +" aposto al " + x +" "+ inputValue 
+
+                                socket.emit('textApuesta',usuario +" aposto al " + x +" "+ inputValue)
                             }
-                    
+                            
                         }
 
+
                 });
+
+
+
                 
             }
 
@@ -383,18 +401,12 @@
 
             function numberWin() {
                 winningSegment = theWheel.getIndicatedSegment();
-                socket.emit('win',winningSegment.text)
-                // swal({
-                //         title: " ¡ El numero ganador es "+winningSegment.text+" !",
-                //         imageUrl: "img/Muerte.png",
+                if (myTurn=true){
 
-                //         showCancelButton: true,
-                //         confirmButtonColor: "#e74c3c",
-                //         confirmButtonText: "Okey",
-                //         closeOnConfirm: false
-                //     },()=> {
-                //         socket.emit('win',winningSegment.text)
-                // })
+                    socket.emit('win',winningSegment.text)
+                }
+               
+
             }
                 // -------------------------------------------------------
             // Function to handle the onClick on the power buttons.
@@ -480,7 +492,7 @@
             function resetWheel()
             {
                 theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
-                // theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+                theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
 
                 document.getElementById('pw1').className = "";  // Remove all colours from the power level indicators.
                 document.getElementById('pw2').className = "";
@@ -513,6 +525,7 @@
                     document.getElementById('sala').innerHTML= sala;
 
             }
+
             function SelectHost(){
                 swal({
                         title: " Te toca girar la Rueleta",
@@ -525,6 +538,7 @@
                     })
             
             }
+  
         </script>
     </body>
 </html>

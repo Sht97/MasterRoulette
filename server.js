@@ -10,6 +10,11 @@ const io = require("socket.io")(
 //39 fila 3
 //40 rojo
 //41 negro
+var Diamonds=[];
+var Clovers=[];
+var Hearts=[];
+var Spades=[];
+
 filaUno=[3,6,9,12,15,18,21,24,27,30,33,36]
 filaDos=[2,5,8,11,14,17,20,23,26,29,32,35]
 filaTres=[1,4,7,10,13,16,19,22,25,28,31,34]
@@ -83,15 +88,17 @@ function contarApuestas(sala){
 function countReadyToPlay(room){
     var aux=true;
     room.map(i=>{
-        if(i.readyToPlay==true) aux=false;
+        if(i.readyToPlay===false) aux=false;
     })
     return aux;
 }
 
-var Diamonds=[];
-var Clovers=[];
-var Hearts=[];
-var Spades=[];
+function disableReady(room){
+    room.map(i=>{
+        i.readyToPlay= false;  
+    })
+
+}
 
 io.on('connection', socket=> {
 
@@ -131,32 +138,68 @@ io.on('connection', socket=> {
                         }
                     })
                     aux=Diamonds.length;
-                    if(contarcountReadyToPlayApuestas(Diamonds))
+                    if(countReadyToPlay(Diamonds))
                     {   
                         host=Math.round(Math.random()*(aux-1))
                         io.to(Diamonds[host].socket).emit('host')
+                        disableReady(Diamonds)
                     }
                     
                     break;
-                case value:
-                    
+                case "Clover":
+                    Clovers.map(i=>{
+                        if(i.socket==socket.id){
+                            i.readyToPlay=true;
+                        }
+                    })
+                    aux=Clovers.length;
+                    if(countReadyToPlay(Clovers))
+                    {   
+                        host=Math.round(Math.random()*(aux-1))
+                        io.to(Clovers[host].socket).emit('host')
+                        disableReady(Clovers)
+                    }
                 break;
-                case value:
+                case "Heart":
             
+                    Hearts.map(i=>{
+                        if(i.socket==socket.id){
+                            i.readyToPlay=true;
+                        }
+                    })
+                    aux=Hearts.length;
+                    if(countReadyToPlay(Hearts))
+                    {   
+                        host=Math.round(Math.random()*(aux-1))
+                        io.to(Hearts[host].socket).emit('host')
+                        disableReady(Hearts)
+                    }
                     break;
 
-                case value:
-        
-                    break;
-            
-                default:
+                case "Spade":
+                    Spades.map(i=>{
+                        if(i.socket==socket.id){
+                            i.readyToPlay=true;
+                        }
+                    })
+                    aux=Spades.length;
+                    if(countReadyToPlay(Spades))
+                    {   
+                        host=Math.round(Math.random()*(aux-1))
+                        io.to(Spades[host].socket).emit('host')
+                        disableReady(Spades)
+                    }
                     break;
             }
         })
 
+        socket.on('textApuesta',data=>{
+            io.in(room).emit('text',data)
+        })
         socket.on('apuesta',data=>{
-            a=new Apuesta(data.numero,data.valor,data.estado)
             
+
+            a=new Apuesta(data.numero,data.valor,data.estado); 
             switch (room) {
                 case "Diamond":
                     Diamonds.map(i=>{
@@ -169,15 +212,7 @@ io.on('connection', socket=> {
                     aux=Diamonds.length;
                     if(aux===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
-                    }
-
-                    else{
-                        if(contarApuestas(Diamonds))
-                        {   
-                            host=Math.round(Math.random()*(aux-1))
-                            io.to(Diamonds[host].socket).emit('host')
-                        }
-                    }               
+                    }           
                     break;
     
                 case "Clover":
@@ -187,18 +222,11 @@ io.on('connection', socket=> {
                             i.credito=i.credito-a.valor;
                         }
                     })
-                    io.in(room).emit('checkApuesta',Clovers);   
+                    io.in(room).emit('checkApuesta',Clovers);
                     aux=Clovers.length;
                     if(aux===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
-                    }
-                    else{
-                        if(contarApuestas(Clovers))
-                        {   
-                            host=Math.round(Math.random()*(aux-1))
-                            io.to(Clovers[host].socket).emit('host')
-                        }
-                    }  
+                    } 
                     break;
     
                 case "Heart":
@@ -208,18 +236,11 @@ io.on('connection', socket=> {
                             i.credito=i.credito-a.valor;
                         }
                     })
-                    io.in(room).emit('checkApuesta',Hearts);   
+                    io.in(room).emit('checkApuesta',Hearts);
                     aux=Hearts.length;
                     if(aux===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
-                    }
-                    else{
-                        if(contarApuestas(Hearts))
-                        {   
-                            host=Math.round(Math.random()*(aux-1))
-                            io.to(Hearts[host].socket).emit('host')
-                        }
-                    }    
+                    } 
                     break;
     
                 case "Spade":
@@ -229,18 +250,12 @@ io.on('connection', socket=> {
                             i.credito=i.credito-a.valor;
                         }
                     })
-                    io.in(room).emit('checkApuesta',Spades);   
+                    io.in(room).emit('checkApuesta',Spades);
                     aux=Spades.length;
                     if(aux===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
-                    }
-                    else{
-                        if(contarApuestas(Spades))
-                        {   
-                            host=Math.round(Math.random()*(aux-1))
-                            io.to(Spades[host].socket).emit('host')
-                        }
-                    }  
+                    } 
+                    break;
             }
         })
 
@@ -290,21 +305,21 @@ io.on('connection', socket=> {
                     Clovers.map(jugador=>{
                         jugador.resolverApuestas(win);
                     })
-                    io.in(room).emit('newRound',Clovers)
+                    io.in(room).emit('newRound',{arreglo:Clovers, numberWin:win})
                     break;
     
                 case "Heart":
                     Hearts.map(jugador=>{
                         jugador.resolverApuestas(win);
                     })
-                    io.in(room).emit('newRound',Hearts)
+                    io.in(room).emit('newRound',{arreglo:Hearts, numberWin:win})
                     break;
     
                 case "Spade":
                     Spades.map(jugador=>{
                         jugador.resolverApuestas(win);
                     })
-                    io.in(room).emit('newRound',Spades)
+                    io.in(room).emit('newRound',{arreglo:Spades, numberWin:win})
                     break;
             console.log('se fue alguien',room);
         };
