@@ -27,14 +27,17 @@ class Jugador{
         this.socket=socket;
         this.name=name;
         this.credito=10000;
-        this.apuestas=[]
+        this.apuestas=[];
         this.readyToPlay=false;
     }
     addApuesta(apuesta){
         this.apuestas.push(apuesta)
     }
     resolverApuestas(win){
-        this.apuestas.map(apuesta=>{
+
+
+        this.apuestas.map(apuesta=> {
+            console.log(apuesta);
             switch(apuesta.tipo){
                 case 1://Apuesta al número
                     if(win==apuesta.numero){
@@ -44,13 +47,13 @@ class Jugador{
                 case 2://Apuesta a la fila
                     switch (apuesta.numero) {
                         case 37:
-                            if(filaUno.includes(win))this.credito=this.credito+apuesta.valor*3
+                            if(filaUno.includes(win))this.credito=this.credito+apuesta.valor*3;
                             break;
                         case 38:
-                            if(filaDos.includes(win))this.credito=this.credito+apuesta.valor*3
+                            if(filaDos.includes(win))this.credito=this.credito+apuesta.valor*3;
                             break;
                         case 39:
-                            if(filaTres.includes(win))this.credito=this.credito+apuesta.valor*3
+                            if(filaTres.includes(win))this.credito=this.credito+apuesta.valor*3;
                             break;
                     }                    
                     break;
@@ -70,9 +73,8 @@ class Jugador{
     
                         break;
             }
-
-            this.apuestas.pop(apuesta);
-        })
+        });
+        this.apuestas=[];
     }
 
 }
@@ -116,8 +118,8 @@ io.on('connection', socket=> {
     socket.on('JoinRoom',(data)=>{
         var{room,name}=data;
         socket.join(room);
-        jugador =new Jugador(socket.id,name)
-        console.log(socket.id)
+        jugador =new Jugador(socket.id,name);
+        console.log(socket.id);
         switch(room){
             case "Diamond":
                 Diamonds.push(jugador);
