@@ -201,7 +201,8 @@
                 timeApuesta=false;
                 socket.emit('apuestaReady')
                 document.getElementById("apuestaReady").disabled=true;
-                
+
+
             }
 
             function cambiarBotones(){ 
@@ -214,6 +215,7 @@
             function ganoApuesta(data){
                 console.log('data',data);
                 resetWheel();
+                $('#messages').append($('<li>').text('Nueva ronda'));
                 let found = data.arreglo.find(element => element.socket==socket.id);
                 if(found.credito>credito){
                     swal({
@@ -414,7 +416,7 @@
             };
 
             // Set the image source, once complete this will trigger the onLoad callback (above).
-            loadedImg.src = "img/esta.png";
+            loadedImg.src = "img/esta1.png";
             // Vars used by the code in this page to do power controls.
             let wheelPower    = 0;
             let wheelSpinning = false;
