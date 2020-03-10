@@ -10,10 +10,10 @@ const io = require("socket.io")(
 //39 fila 3
 //40 rojo
 //41 negro
-var Diamonds=[];
-var Clovers=[];
-var Hearts=[];
-var Spades=[];
+var Diamantes=[];
+var Trebols=[];
+var Corazons=[];
+var Picas=[];
 
 filaUno=[3,6,9,12,15,18,21,24,27,30,33,36]
 filaDos=[2,5,8,11,14,17,20,23,26,29,32,35]
@@ -121,102 +121,102 @@ io.on('connection', socket=> {
         jugador =new Jugador(socket.id,name);
         console.log(socket.id);
         switch(room){
-            case "Diamond":
-                Diamonds.push(jugador);
-                console.log(Diamonds);
-                io.in(room).emit('newUser',Diamonds);   
+            case "Diamante":
+                Diamantes.push(jugador);
+                console.log(Diamantes);
+                io.in(room).emit('newUser',Diamantes);   
                 break;
-            case "Clover":
+            case "Trebol":
                 //Agrega al array
-                Clovers.push(jugador);
+                Trebols.push(jugador);
                 //Manda al nuevo la lista 
-                io.in(room).emit('newUser',Clovers)
+                io.in(room).emit('newUser',Trebols)
                 break;
-            case "Heart":
-                Hearts.push(jugador);
-                io.in(room).emit('newUser',Hearts)
+            case "Corazon":
+                Corazons.push(jugador);
+                io.in(room).emit('newUser',Corazons)
                 break;
-            case "Spade":
-                Spades.push(jugador);
-                io.in(room).emit('newUser',Spades)
+            case "Pica":
+                Picas.push(jugador);
+                io.in(room).emit('newUser',Picas)
 
                 break;         
         }
         socket.on('apuestaReady',()=>{
             switch (room) {
-                case "Diamond":
-                    Diamonds.map(i=>{
+                case "Diamante":
+                    Diamantes.map(i=>{
                         if(i.socket==socket.id){
                             i.readyToPlay=true;
                         }
                     })
-                    aux=Diamonds.length;
-                    if(Diamonds.length===1){
+                    aux=Diamantes.length;
+                    if(Diamantes.length===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
                     }
                     else{
-                        if(countReadyToPlay(Diamonds))
+                        if(countReadyToPlay(Diamantes))
                         {
                             host=Math.round(Math.random()*(aux-1));
-                            io.to(Diamonds[host].socket).emit('host');
-                            disableReady(Diamonds)
+                            io.to(Diamantes[host].socket).emit('host');
+                            disableReady(Diamantes)
                         }
                     }
                     break;
-                case "Clover":
-                    Clovers.map(i=>{
+                case "Trebol":
+                    Trebols.map(i=>{
                         if(i.socket==socket.id){
                             i.readyToPlay=true;
                         }
                     })
-                    aux=Clovers.length;
-                    if(Clovers.length===1){
+                    aux=Trebols.length;
+                    if(Trebols.length===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
                     }else{
-                        if(countReadyToPlay(Clovers))
+                        if(countReadyToPlay(Trebols))
                         {
                             host=Math.round(Math.random()*(aux-1))
-                            io.to(Clovers[host].socket).emit('host')
-                            disableReady(Clovers)
+                            io.to(Trebols[host].socket).emit('host')
+                            disableReady(Trebols)
                         }
                     }
 
                 break;
-                case "Heart":
-                    Hearts.map(i=>{
+                case "Corazon":
+                    Corazons.map(i=>{
                         if(i.socket==socket.id){
                             i.readyToPlay=true;
                         }
                     })
-                    aux=Hearts.length;
-                    if(Hearts.length===1){
+                    aux=Corazons.length;
+                    if(Corazons.length===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
                     }
                     else {
-                        if(countReadyToPlay(Hearts))
+                        if(countReadyToPlay(Corazons))
                         {
                             host=Math.round(Math.random()*(aux-1))
-                            io.to(Hearts[host].socket).emit('host')
-                            disableReady(Hearts)
+                            io.to(Corazons[host].socket).emit('host')
+                            disableReady(Corazons)
                         }
                     }
                     break;
 
-                case "Spade":
-                    Spades.map(i=>{
+                case "Pica":
+                    Picas.map(i=>{
                         if(i.socket==socket.id){
                             i.readyToPlay=true;
                         }
                     });
-                    aux=Spades.length;
-                    if(Hearts.length===1){
+                    aux=Picas.length;
+                    if(Corazons.length===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
                     }else{
-                        if(countReadyToPlay(Spades))
+                        if(countReadyToPlay(Picas))
                         {
                             host=Math.round(Math.random()*(aux-1));
-                            io.to(Spades[host].socket).emit('host');
-                            disableReady(Spades)
+                            io.to(Picas[host].socket).emit('host');
+                            disableReady(Picas)
                         }
                     }
                     break;
@@ -233,57 +233,57 @@ io.on('connection', socket=> {
 
             a=new Apuesta(data.numero,data.valor,data.estado); 
             switch (room) {
-                case "Diamond":
-                    Diamonds.map(i=>{
+                case "Diamante":
+                    Diamantes.map(i=>{
                         if(i.socket==socket.id){
                             i.apuestas.push(a);
                             i.credito=i.credito-a.valor;
                         }
                     })
-                    io.in(room).emit('checkApuesta',Diamonds);
-                    aux=Diamonds.length;
+                    io.in(room).emit('checkApuesta',Diamantes);
+                    aux=Diamantes.length;
                     if(aux===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
                     }           
                     break;
     
-                case "Clover":
-                    Clovers.map(i=>{
+                case "Trebol":
+                    Trebols.map(i=>{
                         if(i.socket==socket.id){
                             i.apuestas.push(a);
                             i.credito=i.credito-a.valor;
                         }
                     })
-                    io.in(room).emit('checkApuesta',Clovers);
-                    aux=Clovers.length;
+                    io.in(room).emit('checkApuesta',Trebols);
+                    aux=Trebols.length;
                     if(aux===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
                     } 
                     break;
     
-                case "Heart":
-                    Hearts.map(i=>{
+                case "Corazon":
+                    Corazons.map(i=>{
                         if(i.socket==socket.id){
                             i.apuestas.push(a);
                             i.credito=i.credito-a.valor;
                         }
                     })
-                    io.in(room).emit('checkApuesta',Hearts);
-                    aux=Hearts.length;
+                    io.in(room).emit('checkApuesta',Corazons);
+                    aux=Corazons.length;
                     if(aux===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
                     } 
                     break;
     
-                case "Spade":
-                    Spades.map(i=>{
+                case "Pica":
+                    Picas.map(i=>{
                         if(i.socket==socket.id){
                             i.apuestas.push(a);
                             i.credito=i.credito-a.valor;
                         }
                     })
-                    io.in(room).emit('checkApuesta',Spades);
-                    aux=Spades.length;
+                    io.in(room).emit('checkApuesta',Picas);
+                    aux=Picas.length;
                     if(aux===1){
                         io.to(socket.id).emit('estasSolo','Esperando a otros jugadores');
                     } 
@@ -293,24 +293,24 @@ io.on('connection', socket=> {
 
         socket.in(room).on('disconnect',()=>{        
             switch (room) {
-                case "Diamond":
-                    Diamonds = Diamonds.filter((i)=>i.socket !== socket.id)
-                    socket.in(room).emit('userLeft',Diamonds);
+                case "Diamante":
+                    Diamantes = Diamantes.filter((i)=>i.socket !== socket.id)
+                    socket.in(room).emit('userLeft',Diamantes);
                     break;
     
-                case "Clover":
-                    Clovers = Clovers.filter((i)=>i.socket !== socket.id)
-                    socket.in(room).emit('userLeft',Clovers);
+                case "Trebol":
+                    Trebols = Trebols.filter((i)=>i.socket !== socket.id)
+                    socket.in(room).emit('userLeft',Trebols);
                     break;
     
-                case "Heart":
-                    Hearts = Hearts.filter((i)=>i.socket !== socket.id)
-                    socket.in(room).emit('userLeft',Hearts);
+                case "Corazon":
+                    Corazons = Corazons.filter((i)=>i.socket !== socket.id)
+                    socket.in(room).emit('userLeft',Corazons);
                     break;
     
-                case "Spade":
-                    Spades = Spades.filter((i)=>i.socket !== socket.id)
-                    socket.in(room).emit('userLeft',Spades);
+                case "Pica":
+                    Picas = Picas.filter((i)=>i.socket !== socket.id)
+                    socket.in(room).emit('userLeft',Picas);
                     break;
             console.log('se fue alguien',room);
             }
@@ -326,32 +326,32 @@ io.on('connection', socket=> {
             var win=data*1;
 
             switch (room) {
-                case "Diamond":
-                    Diamonds.map(jugador=>{
+                case "Diamante":
+                    Diamantes.map(jugador=>{
                         jugador.resolverApuestas(win);
                     })
-                    io.in(room).emit('newRound',{arreglo:Diamonds, numberWin:win})
+                    io.in(room).emit('newRound',{arreglo:Diamantes, numberWin:win})
                     break;
     
-                case "Clover":
-                    Clovers.map(jugador=>{
+                case "Trebol":
+                    Trebols.map(jugador=>{
                         jugador.resolverApuestas(win);
                     })
-                    io.in(room).emit('newRound',{arreglo:Clovers, numberWin:win})
+                    io.in(room).emit('newRound',{arreglo:Trebols, numberWin:win})
                     break;
     
-                case "Heart":
-                    Hearts.map(jugador=>{
+                case "Corazon":
+                    Corazons.map(jugador=>{
                         jugador.resolverApuestas(win);
                     })
-                    io.in(room).emit('newRound',{arreglo:Hearts, numberWin:win})
+                    io.in(room).emit('newRound',{arreglo:Corazons, numberWin:win})
                     break;
     
-                case "Spade":
-                    Spades.map(jugador=>{
+                case "Pica":
+                    Picas.map(jugador=>{
                         jugador.resolverApuestas(win);
                     })
-                    io.in(room).emit('newRound',{arreglo:Spades, numberWin:win})
+                    io.in(room).emit('newRound',{arreglo:Picas, numberWin:win})
                     break;
         };
 

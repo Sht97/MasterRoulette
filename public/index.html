@@ -18,7 +18,7 @@
         <!-- MENSAJE QUE VA ARRIBA DELA RULETA JUNTO CON EL MODAl -->
         <div align="center" >
             <h1 id="sala" class="label" >Aqui estara tu sala</h1>
-
+            <img id ="imgsala"> </img>
             <div id="myModal" class="modal show" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-xl " >
                     <div class="modal-content">
@@ -38,10 +38,10 @@
                             <input type="text" class="form-control" id="Name">
                             <div class="btn-group" role="group" aria-label="Basic example"> 
   
-                                <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="connectRoom('Diamond')">Diamante</button>
-                                <button type="submit" class="btn btn-success" data-dismiss="modal"onclick="connectRoom('Clover')">Trebol</button>
-                                <button type="submit" class="btn btn-danger"data-dismiss="modal"onclick="connectRoom('Heart')">Corazon</button>
-                                <button type="submit" class="btn btn-dark"data-dismiss="modal" onclick="connectRoom('Spade')">Picas</button>
+                                <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="connectRoom('Diamante')">Diamante</button>
+                                <button type="submit" class="btn btn-success" data-dismiss="modal"onclick="connectRoom('Trebol')">Trebol</button>
+                                <button type="submit" class="btn btn-danger"data-dismiss="modal"onclick="connectRoom('Corazon')">Corazon</button>
+                                <button type="submit" class="btn btn-dark"data-dismiss="modal" onclick="connectRoom('Pica')">Picas</button>
                             </div>
                 </div>
                 </div>
@@ -72,22 +72,21 @@
         
                     <table class="power" cellpadding="10" cellspacing="0">
                         <tr>
-                            <th align="center">Power</th>latest
+                            <th align="center">Velocidades</th>
                         </tr>
                         <tr>
-                            <td width="78" align="center" id="pw3" onClick="powerSelected(3);">High</td>
+                            <td width="78" align="center" id="pw3" onClick="powerSelected(3);">Alta</td>
                         </tr>
                         <tr>
-                            <td align="center" id="pw2" onClick="powerSelected(2);">Med</td>
+                            <td align="center" id="pw2" onClick="powerSelected(2);">Media</td>
                         </tr>
                         <tr>
-                            <td align="center" id="pw1" onClick="powerSelected(1);">Low</td>
+                            <td align="center" id="pw1" onClick="powerSelected(1);">Baja</td>
                         </tr>
                     </table>
                     <br/>
                     <img id="spin_button" src="spin_off.png" alt="Spin" onClick="mySpin();" />
                     <br /><br />
-                    &nbsp;&nbsp;<a href="#" onClick="resetWheel(); return false;">Play Again</a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(reset)
                 </div>
 
               </div>
@@ -201,8 +200,7 @@
                 timeApuesta=false;
                 socket.emit('apuestaReady')
                 document.getElementById("apuestaReady").disabled=true;
-
-
+                
             }
 
             function cambiarBotones(){ 
@@ -215,7 +213,6 @@
             function ganoApuesta(data){
                 console.log('data',data);
                 resetWheel();
-                $('#messages').append($('<li>').text('Nueva ronda'));
                 let found = data.arreglo.find(element => element.socket==socket.id);
                 if(found.credito>credito){
                     swal({
@@ -306,7 +303,7 @@
                                 swal({
                                     // hay que cambiar la x
                                     title: " ¡Usted aposto "+inputValue+" al "+numeroAPuesta+" !!!",
-                                    imageUrl: "img/Muerte.png",
+                                    imageUrl: "img/fichas.png",
 
                                     showAcceptButton: true,
                                     confirmButtonColor: "#e74c3c",
@@ -416,7 +413,7 @@
             };
 
             // Set the image source, once complete this will trigger the onLoad callback (above).
-            loadedImg.src = "img/esta1.png";
+            loadedImg.src = "img/esta.png";
             // Vars used by the code in this page to do power controls.
             let wheelPower    = 0;
             let wheelSpinning = false;
@@ -538,7 +535,6 @@
                 swal({
                         title: " ¡Bienvido a la sala "+sala+" !!!",
                         imageUrl: "img/Muerte.png",
-
                         showAcceptButton: true,
                         confirmButtonColor: "#e74c3c",
                         confirmButtonText: "Okey",
@@ -546,13 +542,34 @@
 
                     })
                     document.getElementById('sala').innerHTML= sala;
+                    
+                    switch (sala){
 
-            }
+                        case "Diamante":
+                        ponerImagen("img/Diamante.png")
+                        break;
+
+                        case "Trebol":
+                        ponerImagen("img/trebol.png")
+                        break;
+
+                        case "Corazon":
+                        ponerImagen("img/Corazon.png")
+                        break;
+
+                        case "Pica":
+                        ponerImagen("img/pica.jpg")
+                        break;
+
+                    }
+                  
+                }
+        
 
             function SelectHost(){
                 swal({
                         title: " Te toca girar la Rueleta",
-                        imageUrl: "img/Muerte.png",
+                        imageUrl: "img/Diamante.png",
 
                         showAcceptButton: true,
                         confirmButtonColor: "#e74c3c",
@@ -560,6 +577,14 @@
                         closeOnConfirm: true
                     })
             
+            }
+
+            function ponerImagen(img){
+                
+                
+                var elem = document.getElementById('imgsala');
+                elem.src = img; 
+
             }
   
         </script>
