@@ -201,6 +201,7 @@
                 timeApuesta=false;
                 socket.emit('apuestaReady')
                 document.getElementById("apuestaReady").disabled=true;
+                
             }
 
             function cambiarBotones(){ 
@@ -280,7 +281,6 @@
                                 alert('No se pudo por saldo insuficiente');
                             }
                             else{
-                                console.log('Holi');
                                 numeroAPuesta=x;
                                 switch (x) {
                                     case 37:
@@ -291,12 +291,12 @@
                                         numeroAPuesta='Fila 2';
                                         break;
                                     case 39:
-                                        numeroAPuesta='Fila 1';
+                                        numeroAPuesta='Fila 3';
                                         break;
                                     case 40:
                                         numeroAPuesta='Color Rojo';
                                         break;
-                                    case 40:
+                                    case 41:
                                         numeroAPuesta='Color Negro';
                                         break;
 

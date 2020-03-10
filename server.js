@@ -219,10 +219,11 @@ io.on('connection', socket=> {
                     }
                     break;
             }
+
         });
 
         socket.on('textApuesta',data=>{
-            console.log('data')
+            console.log('estas son las apuestas' ,data.apuestas);
             io.in(room).emit('text',data)
         })
         socket.on('apuesta',data=>{
