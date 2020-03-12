@@ -234,10 +234,13 @@
                         closeOnConfirm: true
                     })
                 }
+
                 cambiarBotones();
                 timeApuesta=true;
                 credito=found.credito;
                 llenarTabla(data.arreglo);
+                $('#messages').append($('<li>').text('Nueva Ronda'));
+
                 document.getElementById("apuestaReady").disabled=true;
             }
 
