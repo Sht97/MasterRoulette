@@ -1,8 +1,8 @@
 const app = require("./app");
 
 const io = require("socket.io")(
-    app.listen(process.env.PORT || 3000, () => {
-        console.log("Listen o port ", 3000);
+    app.listen(process.env.PORT || 80, () => {
+        console.log("Listen o port ", 80);
     })
 );
 //37 fila 1
